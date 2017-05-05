@@ -16,7 +16,7 @@ public class Background extends Actor {
     private final TextureRegion textureRegion;
     private Rectangle textureRegionBounds1;
     private Rectangle textureRegionBounds2;
-    private int speed = 200;
+    private int speed = 100;
 
     public Background() {
         textureRegion = new TextureRegion(new Texture(Gdx.files.internal(Constants.BACKGROUND_IMAGE_PATH)));
@@ -54,6 +54,16 @@ public class Background extends Actor {
     private void resetBounds() {
         textureRegionBounds1 = textureRegionBounds2;
         textureRegionBounds2 = new Rectangle(0f, (0f-Gdx.graphics.getHeight()+6f), Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    public int getSpeed()
+    {
+        return speed;
+    }
+
+    public void setSpeed(int speed)
+    {
+        this.speed=speed;
     }
 
 }

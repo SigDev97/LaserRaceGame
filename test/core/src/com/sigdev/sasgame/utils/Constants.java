@@ -28,7 +28,7 @@ public class Constants {
     public static final float GROUND_RIGHT_X = 15f;
     public static final float GROUND_RIGHT_Y = 0;
 
-    public static final float GROUND_WIDTH = 0.5f;
+    public static final float GROUND_WIDTH = 0.75f;
     public static final float GROUND_HEIGHT = 50f;
     public static final float GROUND_DENSITY = 0f;
 
