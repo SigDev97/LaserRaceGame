@@ -32,7 +32,6 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gameStage.getViewport().update(width, height);
-        Gdx.app.log("UpdateViewPort","W-"+width+" H-"+height);
     }
 
     @Override
