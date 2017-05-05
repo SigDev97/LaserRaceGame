@@ -3,7 +3,9 @@ package com.sigdev.sasgame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -44,6 +46,12 @@ public class GameStage extends Stage implements ContactListener{
     private Vector3 touchPoint;
 
     private FPSLogger fps;
+    private BitmapFont font;
+
+    private Background background;
+    private Vector2 speed;
+    private float space;
+    private int s=0;
 
     public GameStage() {
         world = WorldUtils.createWorld();
@@ -55,10 +63,14 @@ public class GameStage extends Stage implements ContactListener{
         setupGround();
         setupPlayer();
 
+        speed=new Vector2(0f,10f);
+        space=0;
+
         createEnemy();
         setupTouchControlAreas();
 
-        fps=new FPSLogger();
+        fps=new FPSLogger();//fps logger
+        font=new BitmapFont();//Temp text
     }
 
     private void setupCamera() {
@@ -93,11 +105,12 @@ public class GameStage extends Stage implements ContactListener{
     }
 
     private void setUpBackground() {
-        addActor(new Background());
+        background = new Background();
+        addActor(background);
     }
 
     private void createEnemy() {
-        Enemy enemy = new Enemy(WorldUtils.createEnemy(world));
+        Enemy enemy = new Enemy(WorldUtils.createEnemy(world),speed);
         addActor(enemy);
     }
 
@@ -122,6 +135,16 @@ public class GameStage extends Stage implements ContactListener{
 
         //TODO: Implement interpolation
 
+        speed.y=speed.y+0.0025f;//Temporany speed increase method
+
+        space+= (speed.y*(delta*10))/100;//Temporany space increase method
+
+        s++;
+        if(s>25)
+        {
+            background.setSpeed(background.getSpeed()+1);
+            s=0;
+        }
 
     }
 
@@ -140,6 +163,11 @@ public class GameStage extends Stage implements ContactListener{
         super.draw();
         //renderer.render(world, camera.combined);
         //fps.log();
+        //getBatch().end();
+        getBatch().begin();
+        font.draw(getBatch(),space+" m",20,Gdx.graphics.getHeight()-20);
+        font.draw(getBatch(),"Speed:"+speed.y,20,20);
+        getBatch().end();
     }
 
     @Override

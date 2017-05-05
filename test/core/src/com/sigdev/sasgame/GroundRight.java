@@ -31,7 +31,7 @@ public class GroundRight extends GameActor {
         textureRegion1 = new TextureRegion(new Texture(Gdx.files.internal(Constants.GROUND_BACK)));
         textureRegion2 = new TextureRegion(new Texture(Gdx.files.internal(Constants.GROUND_OVER)));
 
-        textureRegionBounds = new Rectangle(transformToScreenX(body.getPosition().x-0.6f), transformToScreenY(body.getPosition().y),
+        textureRegionBounds = new Rectangle(transformToScreenX(body.getPosition().x-0.75f), transformToScreenY(body.getPosition().y),
                 transformToScreenX(getUserData().getWidth()+0.5f), transformToScreenY(getUserData().getHeight()));
 
         back=new Sprite(textureRegion1);

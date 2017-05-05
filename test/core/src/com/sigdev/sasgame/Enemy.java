@@ -20,14 +20,15 @@ import com.sigdev.sasgame.utils.GameActor;
 public class Enemy extends GameActor {
 
     private final TextureRegion textureRegion1,textureRegion2;
-    private Rectangle textureRegionBounds1;
     private Sprite back;
 
     private float changeAlpha;
     private float alpha;
 
+    private Vector2 speed;
 
-    public Enemy(Body body) {
+
+    public Enemy(Body body,Vector2 speed) {
         super(body);
         textureRegion1 = new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_BACK)));
         textureRegion2 = new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_OVER)));
@@ -41,6 +42,8 @@ public class Enemy extends GameActor {
 
         alpha=1;
         changeAlpha=0;
+
+        this.speed=speed;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class Enemy extends GameActor {
     @Override
     public void act(float delta) {
         super.act(delta);
-        body.setLinearVelocity(getUserData().getLinearVelocity());
+        body.setLinearVelocity(speed);
     }
 
     @Override
