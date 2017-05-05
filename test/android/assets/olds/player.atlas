@@ -1,0 +1,20 @@
+
+player.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+blue
+  rotate: false
+  xy: 2, 2
+  size: 20, 50
+  orig: 20, 50
+  offset: 0, 0
+  index: -1
+red
+  rotate: false
+  xy: 24, 2
+  size: 20, 50
+  orig: 20, 50
+  offset: 0, 0
+  index: -1
