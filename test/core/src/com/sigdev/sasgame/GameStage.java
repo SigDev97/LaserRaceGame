@@ -143,7 +143,7 @@ public class GameStage extends Stage implements ContactListener{
     public void draw() {
         super.draw();
         //renderer.render(world, camera.combined);
-        fps.log();
+        //fps.log();
     }
 
     @Override
