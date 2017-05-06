@@ -117,7 +117,10 @@ public class Player extends GameActor {
 
     }
 
-
+    public Body getBody()
+    {
+        return body;
+    }
 
 
 }
