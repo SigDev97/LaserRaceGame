@@ -56,7 +56,7 @@ public class Enemy extends GameActor {
 
         ///COINS////////////////////////////////
         this.player=player;
-        font.getData().setScale(1.25f);
+        font.getData().setScale(1.75f);
         string="";
         /////////////////////////////////////////
 
@@ -107,26 +107,12 @@ public class Enemy extends GameActor {
         //COINS////////////////////////////////////////////////
         font.draw(batch, string, Gdx.graphics.getWidth()-240, 20);
 
+        Gdx.app
+                .log("P","->"+body.getPosition().y);
         if(body.getPosition().y>=16 && body.getPosition().y<=24)
         {
-            float positionPlayer = player.getBody().getPosition().x;
-            float positionEnemy = body.getPosition().x;
-
-
-            if (positionPlayer>positionEnemy)
-            {
-                if(positionPlayer-positionEnemy<distance)
-                {
-                    distance=positionPlayer-positionEnemy;
-                }
-            }
-            else
-            {
-                if(positionEnemy-positionPlayer<distance)
-                {
-                    distance=positionEnemy-positionPlayer;
-                }
-            }
+            distanceLeftAngle();
+            distanceRightAngle();
 
         }
 
@@ -135,13 +121,78 @@ public class Enemy extends GameActor {
             coins=true;
             if (!player.isHit())
             {
-                Gdx.app.log("Closest Distance"," "+distance);
-                string="Closest Distance="+distance;
+
+                if(distance<10f) {
+                    string = "5 POINTS";
+                }
+                else if(distance<30f)
+                {
+                    string = "3 POINTS";
+                }
+
+                else if(distance<50f)
+                {
+                    string = "1 POINTS";
+                }
+
             }
+
+            Gdx.app.log("Distance ",""+distance);
 
         }
 
 
+    }
+
+    private void distanceLeftAngle()
+    {
+        Vector2 position1 = player.getBody().getPosition();
+        Vector2 position2 = body.getPosition();
+
+        position1.x=transformToScreenX(position1.x);
+        position1.x=position1.x-(player.getScreenRectangle().width/2);
+
+        position2.x=transformToScreenX(position2.x);
+        position2.x=position2.x+(screenRectangle.width/2);
+
+
+        position1.y=transformToScreenY(position1.y);
+        position1.y=position1.y-(player.getScreenRectangle().height/2);
+
+        position2.y=transformToScreenY(position2.y);
+        position2.y=position2.y+(screenRectangle.height/2);
+
+        float prov_distance = position1.dst(position2);
+
+        if(prov_distance<distance && prov_distance>0)
+        {
+            distance=prov_distance;
+        }
+    }
+
+    private void distanceRightAngle()
+    {
+        Vector2 position1 = player.getBody().getPosition();
+        Vector2 position2 = body.getPosition();
+
+        position1.x=transformToScreenX(position1.x);
+        position1.x=position1.x+(player.getScreenRectangle().width/2);
+
+        position2.x=transformToScreenX(position2.x);
+        position2.x=position2.x-(screenRectangle.width/2);
+
+        position1.y=transformToScreenY(position1.y);
+        position1.y=position1.y-(player.getScreenRectangle().height/2);
+
+        position2.y=transformToScreenY(position2.y);
+        position2.y=position2.y+(screenRectangle.height/2);
+
+        float prov_distance = position1.dst(position2);
+
+        if(prov_distance<distance && prov_distance>0)
+        {
+            distance=prov_distance;
+        }
     }
 
 }
