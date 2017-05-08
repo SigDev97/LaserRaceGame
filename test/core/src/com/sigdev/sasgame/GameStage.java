@@ -71,6 +71,7 @@ public class GameStage extends Stage implements ContactListener{
 
         fps=new FPSLogger();//fps logger
         font=new BitmapFont();//Temp text
+        font.getData().setScale(1.25f);
     }
 
     private void setupCamera() {
@@ -110,7 +111,7 @@ public class GameStage extends Stage implements ContactListener{
     }
 
     private void createEnemy() {
-        Enemy enemy = new Enemy(WorldUtils.createEnemy(world),speed);
+        Enemy enemy = new Enemy(WorldUtils.createEnemy(world),speed,player);
         addActor(enemy);
     }
 
