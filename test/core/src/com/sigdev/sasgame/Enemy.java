@@ -2,6 +2,7 @@ package com.sigdev.sasgame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,9 +34,6 @@ public class Enemy extends GameActor {
     private float distance = 100;
     private Boolean coins=false;
 
-    private BitmapFont font = new BitmapFont();
-    private String string;
-
 
     public Enemy(Body body,Vector2 speed,Player player) {
 
@@ -56,8 +54,6 @@ public class Enemy extends GameActor {
 
         ///COINS////////////////////////////////
         this.player=player;
-        font.getData().setScale(1.75f);
-        string="";
         /////////////////////////////////////////
 
         this.speed=speed;
@@ -79,12 +75,14 @@ public class Enemy extends GameActor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
 
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+
 
         //DRAW/////////////////////////////////////////////////
-        batch.draw(textureRegion2, screenRectangle.x, screenRectangle.y+10, screenRectangle.getWidth(),
+        batch.draw(textureRegion2, screenRectangle.x, screenRectangle.y+transformToScreenY(0.25f), screenRectangle.getWidth(),
                 screenRectangle.getHeight());
 
-        back.setBounds(screenRectangle.x, screenRectangle.y+10, screenRectangle.getWidth(),
+        back.setBounds(screenRectangle.x, screenRectangle.y+transformToScreenY(0.25f), screenRectangle.getWidth(),
                 screenRectangle.getHeight());
         back.draw(batch);
 
@@ -104,41 +102,33 @@ public class Enemy extends GameActor {
         }
         back.setAlpha(alpha);
 
-        //COINS////////////////////////////////////////////////
-        font.draw(batch, string, Gdx.graphics.getWidth()-240, 20);
-
-        Gdx.app
-                .log("P","->"+body.getPosition().y);
-        if(body.getPosition().y>=16 && body.getPosition().y<=24)
+        if(body.getPosition().y>=16 && body.getPosition().y<=23)
         {
             distanceLeftAngle();
             distanceRightAngle();
 
         }
 
-        if(body.getPosition().y>24 && !coins)
+        if(body.getPosition().y>23 && !coins)
         {
             coins=true;
             if (!player.isHit())
             {
 
-                if(distance<10f) {
-                    string = "5 POINTS";
+                if(distance<15f) {
+                    player.newCoin(5);
                 }
-                else if(distance<30f)
+                else if(distance<25f)
                 {
-                    string = "3 POINTS";
+                    player.newCoin(3);
                 }
 
                 else if(distance<50f)
                 {
-                    string = "1 POINTS";
+                    player.newCoin(1);
                 }
 
             }
-
-            Gdx.app.log("Distance ",""+distance);
-
         }
 
 

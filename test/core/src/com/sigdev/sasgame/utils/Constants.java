@@ -21,6 +21,8 @@ public class Constants {
 
     public static final String PLAYER_BASE_PATH = "player_base.png";
 
+    public static final String FONT = "neon_regular.ttf";
+
     public static final Vector2 WORLD_GRAVITY = new Vector2(0, 0);
 
     public static final float GROUND_LEFT_X = 0f;

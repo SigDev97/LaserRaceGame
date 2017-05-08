@@ -1,9 +1,11 @@
 package com.sigdev.sasgame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Timer;
 import com.sigdev.sasgame.utils.Constants;
 import com.sigdev.sasgame.utils.GameActor;
 
@@ -25,13 +28,25 @@ public class Player extends GameActor {
     public int going=0;
     private boolean hit=false;
 
-    public ShaderProgram shaderOutline;
+    private BitmapFont font;
 
-    private final TextureRegion textureRegion;
+    private final TextureRegion textureRegion,textureCoinOver,textureCoinBack;
 
-    public Player(Body body) {
+    private boolean coin=false;
+    private int coinValue=0;
+
+    private float coinGone=0;
+
+    public Player(Body body, BitmapFont font) {
         super(body);
+
+        this.font=font;
+
         textureRegion = new TextureRegion(new Texture(Gdx.files.internal(Constants.PLAYER_BASE_PATH)));
+        textureCoinOver=new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_OVER)));
+        textureCoinBack=new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_BACK)));
+
+
     }
 
     @Override
@@ -108,12 +123,34 @@ public class Player extends GameActor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
 
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+
 
         batch.draw(textureRegion, screenRectangle.x, screenRectangle.y,screenRectangle.getWidth()/2,screenRectangle.getHeight()/2, screenRectangle.getWidth(),
                 screenRectangle.getHeight(),1,1, MathUtils.radiansToDegrees * body.getAngle());
 
 
         //draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation)
+
+        if(coin && !isHit()) {
+            batch.draw(textureCoinOver, screenRectangle.x, screenRectangle.y + transformToScreenY(2.25f) + coinGone, transformToScreenX(1)/2, transformToScreenY(1)/2, transformToScreenX(1),
+                    transformToScreenY(1), 1, 1, 45);
+
+            batch.draw(textureCoinBack, screenRectangle.x, screenRectangle.y + transformToScreenY(2.25f) + coinGone, transformToScreenX(1)/2, transformToScreenY(1)/2, transformToScreenX(1),
+                    transformToScreenY(1), 1, 1, 45);
+
+            if(coinValue==1)
+            {
+                font.draw(batch,""+coinValue,screenRectangle.x+transformToScreenX(0.35f),screenRectangle.y + transformToScreenY(3f) + coinGone);
+            }
+            else
+            {
+                font.draw(batch,""+coinValue,screenRectangle.x+transformToScreenX(0.25f),screenRectangle.y + transformToScreenY(3f) + coinGone);
+            }
+
+
+            coinGone+=1f;
+        }
 
 
     }
@@ -126,6 +163,20 @@ public class Player extends GameActor {
     public Rectangle getScreenRectangle()
     {
         return screenRectangle;
+    }
+
+    public void newCoin(int v)
+    {
+        coin=true;
+        coinValue=v;
+        coinGone=0;
+
+        Timer.schedule(new Timer.Task(){
+            @Override
+            public void run() {
+                coin=false;
+            }
+        }, 2f);
     }
 
 
