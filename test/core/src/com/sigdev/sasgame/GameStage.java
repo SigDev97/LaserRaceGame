@@ -1,9 +1,12 @@
 package com.sigdev.sasgame;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -20,6 +23,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.sigdev.sasgame.utils.BodyUtils;
+import com.sigdev.sasgame.utils.Constants;
+import com.sigdev.sasgame.utils.SmartFontGenerator;
 import com.sigdev.sasgame.utils.WorldUtils;
 
 /**
@@ -54,24 +59,52 @@ public class GameStage extends Stage implements ContactListener{
     private int s=0;
 
     public GameStage() {
+
+        //INIZIALIZATION
         world = WorldUtils.createWorld();
         world.setContactListener(this);
-
         renderer = new Box2DDebugRenderer();
+
         setupCamera();
         setUpBackground();
+        initFont();
         setupGround();
         setupPlayer();
 
+
         speed=new Vector2(0f,10f);
         space=0;
-
         createEnemy();
         setupTouchControlAreas();
 
+        //TESTS
         fps=new FPSLogger();//fps logger
+
+    }
+
+    private void initFont()
+    {
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        SmartFontGenerator fontGen = new SmartFontGenerator();
+        FileHandle exoFile = Gdx.files.internal(Constants.FONT);
+        font = fontGen.createFont(exoFile, "exo-small", 18);
+        font.getData().setScale((Gdx.graphics.getWidth()/100)*0.25f);
+
+        //BitmapFont fontMedium = fontGen.createFont(exoFile, "exo-medium", 48);
+        //BitmapFont fontLarge = fontGen.createFont(exoFile, "exo-large", 64);
+
+
+
+        /*FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(Constants.FONT));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 20;
+        parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-;:(){}><";
+
         font=new BitmapFont();//Temp text
-        font.getData().setScale(1.25f);
+        //font.getData().setScale(1.25f);
+
+        font = generator.generateFont(parameter);
+        generator.dispose();*/
     }
 
     private void setupCamera() {
@@ -91,7 +124,7 @@ public class GameStage extends Stage implements ContactListener{
 
     private void setupPlayer()
     {
-        player=new Player(WorldUtils.createPlayer(world));
+        player=new Player(WorldUtils.createPlayer(world),font);
         addActor(player);
     }
 
@@ -167,7 +200,7 @@ public class GameStage extends Stage implements ContactListener{
         //getBatch().end();
         getBatch().begin();
         font.draw(getBatch(),space+" m",20,Gdx.graphics.getHeight()-20);
-        font.draw(getBatch(),"Speed:"+speed.y,20,20);
+        font.draw(getBatch(),"Speed -> "+speed.y,20,30);
         getBatch().end();
     }
 

@@ -1,2 +1,6 @@
 http://www.allpiper.com/2d-selection-outline-shader-in-libgdx/
 http://www.gamefromscratch.com/post/2014/07/08/LibGDX-Tutorial-Part-12-Using-GLSL-Shaders-and-creating-a-Mesh.aspx
+
+Font
+http://www.dafont.com/it/polentical-neon.font
+https://github.com/libgdx/libgdx/wiki/Distance-field-fonts
