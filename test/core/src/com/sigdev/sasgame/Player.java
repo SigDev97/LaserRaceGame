@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -28,14 +29,14 @@ public class Player extends GameActor {
     public int going=0;
     private boolean hit=false;
 
-    private BitmapFont font;
-
     private final TextureRegion textureRegion,textureCoinOver,textureCoinBack;
 
+    private BitmapFont font;
     private boolean coin=false;
     private int coinValue=0;
-
     private float coinGone=0;
+
+    private ParticleEffect effect;
 
     public Player(Body body, BitmapFont font) {
         super(body);
@@ -46,7 +47,10 @@ public class Player extends GameActor {
         textureCoinOver=new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_OVER)));
         textureCoinBack=new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_BACK)));
 
-
+        effect = new ParticleEffect();
+        effect.load(Gdx.files.internal(Constants.GREEN_SQUARE), Gdx.files.internal("effects/"));
+        effect.getEmitters().first().setPosition(screenRectangle.x,screenRectangle.y);
+        effect.start();
     }
 
     @Override
@@ -125,33 +129,38 @@ public class Player extends GameActor {
 
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
-
         batch.draw(textureRegion, screenRectangle.x, screenRectangle.y,screenRectangle.getWidth()/2,screenRectangle.getHeight()/2, screenRectangle.getWidth(),
                 screenRectangle.getHeight(),1,1, MathUtils.radiansToDegrees * body.getAngle());
 
+        if(!isHit())
+        {
+            if(coin) {
+                batch.draw(textureCoinOver, screenRectangle.x, screenRectangle.y + transformToScreenY(2.25f) + coinGone, transformToScreenX(1)/2, transformToScreenY(1)/2, transformToScreenX(1),
+                        transformToScreenY(1), 1, 1, 45);
 
-        //draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation)
+                batch.draw(textureCoinBack, screenRectangle.x, screenRectangle.y + transformToScreenY(2.25f) + coinGone, transformToScreenX(1)/2, transformToScreenY(1)/2, transformToScreenX(1),
+                        transformToScreenY(1), 1, 1, 45);
 
-        if(coin && !isHit()) {
-            batch.draw(textureCoinOver, screenRectangle.x, screenRectangle.y + transformToScreenY(2.25f) + coinGone, transformToScreenX(1)/2, transformToScreenY(1)/2, transformToScreenX(1),
-                    transformToScreenY(1), 1, 1, 45);
-
-            batch.draw(textureCoinBack, screenRectangle.x, screenRectangle.y + transformToScreenY(2.25f) + coinGone, transformToScreenX(1)/2, transformToScreenY(1)/2, transformToScreenX(1),
-                    transformToScreenY(1), 1, 1, 45);
-
-            if(coinValue==1)
-            {
-                font.draw(batch,""+coinValue,screenRectangle.x+transformToScreenX(0.35f),screenRectangle.y + transformToScreenY(3f) + coinGone);
+                if(coinValue==1)
+                {
+                    font.draw(batch,""+coinValue,screenRectangle.x+transformToScreenX(0.35f),screenRectangle.y + transformToScreenY(3f) + coinGone);
+                }
+                else
+                {
+                    font.draw(batch,""+coinValue,screenRectangle.x+transformToScreenX(0.25f),screenRectangle.y + transformToScreenY(3f) + coinGone);
+                }
+                coinGone+=1f;
             }
-            else
-            {
-                font.draw(batch,""+coinValue,screenRectangle.x+transformToScreenX(0.25f),screenRectangle.y + transformToScreenY(3f) + coinGone);
-            }
-
-
-            coinGone+=1f;
         }
 
+        batch.end();
+        effect.setPosition(screenRectangle.x+transformToScreenX(1)/3,screenRectangle.y+ transformToScreenY(1.95f));
+        batch.begin();
+        effect.draw(batch,Gdx.graphics.getDeltaTime());
+        batch.end();
+        batch.begin();
+        if (effect.isComplete())
+            effect.reset();
 
     }
 

@@ -20,6 +20,7 @@ public class Constants {
     public static final String ENEMY_SQUARE_OVER = "enemy/enemy_square_over.png";
 
     public static final String PLAYER_BASE_PATH = "player_base.png";
+    public static final String GREEN_SQUARE="effects/green_square.p";
 
     public static final String FONT = "neon_regular.ttf";
 
