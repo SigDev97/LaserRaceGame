@@ -32,16 +32,19 @@ public class Player extends GameActor {
     private final TextureRegion textureRegion,textureCoinOver,textureCoinBack;
 
     private BitmapFont font;
+    private HudManager hudManager;
+
     private boolean coin=false;
     private int coinValue=0;
     private float coinGone=0;
 
     private ParticleEffect effect;
 
-    public Player(Body body, BitmapFont font) {
+    public Player(Body body, BitmapFont font, HudManager hudManager) {
         super(body);
 
         this.font=font;
+        this.hudManager=hudManager;
 
         textureRegion = new TextureRegion(new Texture(Gdx.files.internal(Constants.PLAYER_BASE_PATH)));
         textureCoinOver=new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_OVER)));
@@ -50,6 +53,7 @@ public class Player extends GameActor {
         effect = new ParticleEffect();
         effect.load(Gdx.files.internal(Constants.GREEN_SQUARE), Gdx.files.internal("effects/"));
         effect.getEmitters().first().setPosition(screenRectangle.x,screenRectangle.y);
+        effect.setPosition(screenRectangle.x+transformToScreenX(1)/3,screenRectangle.y+ transformToScreenY(1.95f));
         effect.start();
     }
 
@@ -129,7 +133,7 @@ public class Player extends GameActor {
 
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
-        batch.draw(textureRegion, screenRectangle.x, screenRectangle.y,screenRectangle.getWidth()/2,screenRectangle.getHeight()/2, screenRectangle.getWidth(),
+        batch.draw(textureRegion, screenRectangle.x, screenRectangle.y,screenRectangle.getWidth()/2f,screenRectangle.getHeight()/2f, screenRectangle.getWidth(),
                 screenRectangle.getHeight(),1,1, MathUtils.radiansToDegrees * body.getAngle());
 
         if(!isHit())
@@ -159,7 +163,7 @@ public class Player extends GameActor {
         effect.draw(batch,Gdx.graphics.getDeltaTime());
         batch.end();
         batch.begin();
-        if (effect.isComplete())
+        if (effect.isComplete() && !hit)
             effect.reset();
 
     }
@@ -178,6 +182,7 @@ public class Player extends GameActor {
     {
         coin=true;
         coinValue=v;
+        hudManager.addCoin(v);
         coinGone=0;
 
         Timer.schedule(new Timer.Task(){

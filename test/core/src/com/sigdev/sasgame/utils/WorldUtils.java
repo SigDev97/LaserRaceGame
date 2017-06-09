@@ -43,7 +43,9 @@ public class WorldUtils {
         bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(new Vector2(RandomUtils.randFloat(), enemyType.getY()));
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(enemyType.getWidth() / 2, enemyType.getHeight() / 2);
+        float addW = ((enemyType.getWidth()*5)/100);
+        float addH = ((enemyType.getHeight()*5)/100);
+        shape.setAsBox((enemyType.getWidth() / 2)-addW, (enemyType.getHeight() / 2)-addH);
         Body body = world.createBody(bodyDef);
         body.createFixture(shape, enemyType.getDensity());
         body.resetMassData();

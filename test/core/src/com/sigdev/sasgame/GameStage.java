@@ -40,6 +40,8 @@ public class GameStage extends Stage implements ContactListener{
     private GroundRight groundRight;
     private Player player;
 
+    private HudManager hudManager;
+
     private final float TIME_STEP = 1 / 300f;
     private float accumulator = 0f;
 
@@ -65,17 +67,23 @@ public class GameStage extends Stage implements ContactListener{
         world.setContactListener(this);
         renderer = new Box2DDebugRenderer();
 
-        setupCamera();
-        setUpBackground();
-        initFont();
-        setupGround();
-        setupPlayer();
 
 
         speed=new Vector2(0f,10f);
         space=0;
+        initFont();
+        hudManager = new HudManager(getBatch(),font);
+
+        setupCamera();
+        setUpBackground();
+
+        setupGround();
+        setupPlayer();
+
         createEnemy();
         setupTouchControlAreas();
+
+
 
         //TESTS
         fps=new FPSLogger();//fps logger
@@ -124,7 +132,7 @@ public class GameStage extends Stage implements ContactListener{
 
     private void setupPlayer()
     {
-        player=new Player(WorldUtils.createPlayer(world),font);
+        player=new Player(WorldUtils.createPlayer(world),font, hudManager);
         addActor(player);
     }
 
@@ -195,13 +203,7 @@ public class GameStage extends Stage implements ContactListener{
     @Override
     public void draw() {
         super.draw();
-        //renderer.render(world, camera.combined);
-        //fps.log();
-        //getBatch().end();
-        getBatch().begin();
-        font.draw(getBatch(),space+" m",20,Gdx.graphics.getHeight()-20);
-        font.draw(getBatch(),"Speed -> "+speed.y,20,30);
-        getBatch().end();
+        hudManager.draw(space, speed.y);
     }
 
     @Override

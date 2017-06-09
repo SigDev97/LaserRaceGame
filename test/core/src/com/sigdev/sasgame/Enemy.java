@@ -42,7 +42,7 @@ public class Enemy extends GameActor {
         textureRegion1 = new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_BACK)));
         textureRegion2 = new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_OVER)));
         back=new Sprite(textureRegion1);
-        back.setBounds(screenRectangle.x, screenRectangle.y+10, screenRectangle.getWidth(),
+        back.setBounds(screenRectangle.x, screenRectangle.y, screenRectangle.getWidth(),
                 screenRectangle.getHeight());
 
         back.setAlpha(1f);
@@ -79,11 +79,12 @@ public class Enemy extends GameActor {
 
 
         //DRAW/////////////////////////////////////////////////
-        batch.draw(textureRegion2, screenRectangle.x, screenRectangle.y+transformToScreenY(0.25f), screenRectangle.getWidth(),
-                screenRectangle.getHeight());
+        batch.draw(textureRegion2, screenRectangle.x, screenRectangle.y, screenRectangle.getWidth(), screenRectangle.getHeight());
 
-        back.setBounds(screenRectangle.x, screenRectangle.y+transformToScreenY(0.25f), screenRectangle.getWidth(),
-                screenRectangle.getHeight());
+        //Gdx.app.log("EnemyY ScreenRectangle-> ",""+screenRectangle.y);
+        //Gdx.app.log("EnemyY bodyPos-> ",""+transformToScreenY(body.getPosition().y));
+
+        back.setBounds(screenRectangle.x, screenRectangle.y, screenRectangle.getWidth(), screenRectangle.getHeight());
         back.draw(batch);
 
         //NEON EFFECT//////////////////////////////////////////
