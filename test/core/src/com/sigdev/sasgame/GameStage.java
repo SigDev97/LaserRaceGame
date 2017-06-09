@@ -60,7 +60,11 @@ public class GameStage extends Stage implements ContactListener{
     private float space;
     private int s=0;
 
-    public GameStage() {
+    private SasGame game;
+
+    public GameStage(SasGame game) {
+
+        this.game=game;
 
         //INIZIALIZATION
         world = WorldUtils.createWorld();
@@ -98,21 +102,6 @@ public class GameStage extends Stage implements ContactListener{
         font = fontGen.createFont(exoFile, "exo-small", 18);
         font.getData().setScale((Gdx.graphics.getWidth()/100)*0.25f);
 
-        //BitmapFont fontMedium = fontGen.createFont(exoFile, "exo-medium", 48);
-        //BitmapFont fontLarge = fontGen.createFont(exoFile, "exo-large", 64);
-
-
-
-        /*FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(Constants.FONT));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 20;
-        parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,-;:(){}><";
-
-        font=new BitmapFont();//Temp text
-        //font.getData().setScale(1.25f);
-
-        font = generator.generateFont(parameter);
-        generator.dispose();*/
     }
 
     private void setupCamera() {
@@ -132,7 +121,7 @@ public class GameStage extends Stage implements ContactListener{
 
     private void setupPlayer()
     {
-        player=new Player(WorldUtils.createPlayer(world),font, hudManager);
+        player=new Player(game,WorldUtils.createPlayer(world),font, hudManager);
         addActor(player);
     }
 
@@ -147,12 +136,12 @@ public class GameStage extends Stage implements ContactListener{
     }
 
     private void setUpBackground() {
-        background = new Background();
+        background = new Background(game);
         addActor(background);
     }
 
     private void createEnemy() {
-        Enemy enemy = new Enemy(WorldUtils.createEnemy(world),speed,player);
+        Enemy enemy = new Enemy(game,WorldUtils.createEnemy(world),speed,player);
         addActor(enemy);
     }
 

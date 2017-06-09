@@ -35,12 +35,12 @@ public class Enemy extends GameActor {
     private Boolean coins=false;
 
 
-    public Enemy(Body body,Vector2 speed,Player player) {
+    public Enemy(SasGame game,Body body,Vector2 speed,Player player) {
 
         //DRAW//////////////////////////////////
         super(body);
-        textureRegion1 = new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_BACK)));
-        textureRegion2 = new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_OVER)));
+        textureRegion1 = new TextureRegion(game.manager.get(Constants.ENEMY_SQUARE_BACK,Texture.class));
+        textureRegion2 = new TextureRegion(game.manager.get(Constants.ENEMY_SQUARE_OVER,Texture.class));
         back=new Sprite(textureRegion1);
         back.setBounds(screenRectangle.x, screenRectangle.y, screenRectangle.getWidth(),
                 screenRectangle.getHeight());
@@ -80,9 +80,6 @@ public class Enemy extends GameActor {
 
         //DRAW/////////////////////////////////////////////////
         batch.draw(textureRegion2, screenRectangle.x, screenRectangle.y, screenRectangle.getWidth(), screenRectangle.getHeight());
-
-        //Gdx.app.log("EnemyY ScreenRectangle-> ",""+screenRectangle.y);
-        //Gdx.app.log("EnemyY bodyPos-> ",""+transformToScreenY(body.getPosition().y));
 
         back.setBounds(screenRectangle.x, screenRectangle.y, screenRectangle.getWidth(), screenRectangle.getHeight());
         back.draw(batch);

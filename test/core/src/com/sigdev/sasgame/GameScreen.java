@@ -2,6 +2,7 @@ package com.sigdev.sasgame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 
 /**
@@ -12,9 +13,9 @@ public class GameScreen implements Screen {
 
     private GameStage gameStage;
 
-    public GameScreen()
+    public GameScreen(SasGame game)
     {
-        gameStage=new GameStage();
+        gameStage=new GameStage(game);
     }
 
     @Override

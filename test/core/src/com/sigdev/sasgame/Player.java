@@ -40,15 +40,15 @@ public class Player extends GameActor {
 
     private ParticleEffect effect;
 
-    public Player(Body body, BitmapFont font, HudManager hudManager) {
+    public Player(SasGame game,Body body, BitmapFont font, HudManager hudManager) {
         super(body);
 
         this.font=font;
         this.hudManager=hudManager;
 
-        textureRegion = new TextureRegion(new Texture(Gdx.files.internal(Constants.PLAYER_BASE_PATH)));
-        textureCoinOver=new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_OVER)));
-        textureCoinBack=new TextureRegion(new Texture(Gdx.files.internal(Constants.ENEMY_SQUARE_BACK)));
+        textureRegion = new TextureRegion(game.manager.get(Constants.PLAYER_BASE_PATH,Texture.class));
+        textureCoinOver=new TextureRegion(game.manager.get(Constants.ENEMY_SQUARE_OVER,Texture.class));
+        textureCoinBack=new TextureRegion(game.manager.get(Constants.ENEMY_SQUARE_BACK,Texture.class));
 
         effect = new ParticleEffect();
         effect.load(Gdx.files.internal(Constants.GREEN_SQUARE), Gdx.files.internal("effects/"));

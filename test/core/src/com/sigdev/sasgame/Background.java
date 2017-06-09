@@ -13,13 +13,14 @@ import com.sigdev.sasgame.utils.Constants;
  */
 
 public class Background extends Actor {
+
     private final TextureRegion textureRegion;
     private Rectangle textureRegionBounds1;
     private Rectangle textureRegionBounds2;
     private int speed = 100;
 
-    public Background() {
-        textureRegion = new TextureRegion(new Texture(Gdx.files.internal(Constants.BACKGROUND_IMAGE_PATH)));
+    public Background(SasGame game) {
+        textureRegion = new TextureRegion(game.manager.get(Constants.BACKGROUND_IMAGE_PATH,Texture.class));
         textureRegionBounds1 = new Rectangle(0f ,(Gdx.graphics.getHeight()/ 2f), Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         textureRegionBounds2 = new Rectangle(0f ,(0f- Gdx.graphics.getHeight()/ 2f), Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
