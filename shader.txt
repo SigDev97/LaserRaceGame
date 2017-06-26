@@ -7,3 +7,7 @@ https://github.com/libgdx/libgdx/wiki/Distance-field-fonts
 
 Ios port(?)
 https://software.intel.com/en-us/node/633261
+
+
+//
+http://badlogicgames.com/forum/viewtopic.php?t=18671&p=78842

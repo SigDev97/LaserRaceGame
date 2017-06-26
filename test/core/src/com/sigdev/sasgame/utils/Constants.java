@@ -48,8 +48,8 @@ public class Constants {
     public static final Vector2 PLAYER_LEFT_LINEAR_IMPULSE = new Vector2(-11f, 0f);
 
     public static final float HIT_IMPULSE = 14f;
-    public static final Vector2 PLAYER_RU_LINEAR_IMPULSE = new Vector2(14f, 7f);
-    public static final Vector2 PLAYER_LU_LINEAR_IMPULSE = new Vector2(-14f, 7f);
+    public static final Vector2 PLAYER_RU_LINEAR_IMPULSE = new Vector2(14f, 14f);
+    public static final Vector2 PLAYER_LU_LINEAR_IMPULSE = new Vector2(-14f, 14f);
 
     ////////////////////////////////////////////////////
 

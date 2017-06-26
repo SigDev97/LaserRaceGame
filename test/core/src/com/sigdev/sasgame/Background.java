@@ -17,7 +17,7 @@ public class Background extends Actor {
     private final TextureRegion textureRegion;
     private Rectangle textureRegionBounds1;
     private Rectangle textureRegionBounds2;
-    private int speed = 100;
+    private int speed = 25;
 
     public Background(SasGame game) {
         textureRegion = new TextureRegion(game.manager.get(Constants.BACKGROUND_IMAGE_PATH,Texture.class));

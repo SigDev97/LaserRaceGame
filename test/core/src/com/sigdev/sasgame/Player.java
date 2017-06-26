@@ -53,7 +53,7 @@ public class Player extends GameActor {
         effect = new ParticleEffect();
         effect.load(Gdx.files.internal(Constants.GREEN_SQUARE), Gdx.files.internal("effects/"));
         effect.getEmitters().first().setPosition(screenRectangle.x,screenRectangle.y);
-        effect.setPosition(screenRectangle.x+transformToScreenX(1)/3,screenRectangle.y+ transformToScreenY(1.95f));
+        effect.setPosition(screenRectangle.x+transformToScreen(1)/3,screenRectangle.y+ transformToScreen(1.95f));
         effect.start();
     }
 
@@ -64,36 +64,43 @@ public class Player extends GameActor {
 
     public void left()
     {
-        if(going==0)
+        if(!hit)
         {
-            going=1;
-            body.applyLinearImpulse(getUserData().getLeftLinearImpulse(), body.getWorldCenter(), true);
+            if(going==0)
+            {
+                going=1;
+                body.applyLinearImpulse(getUserData().getLeftLinearImpulse(), body.getWorldCenter(), true);
 
 
-        }
-        else if (going==2)
-        {
-            going=1;
-            body.applyLinearImpulse(getUserData().getLeftLinearImpulse(), body.getWorldCenter(), true);
-            body.applyLinearImpulse(getUserData().getLeftLinearImpulse(), body.getWorldCenter(), true);
+            }
+            else if (going==2)
+            {
+                going=1;
+                body.applyLinearImpulse(getUserData().getLeftLinearImpulse(), body.getWorldCenter(), true);
+                body.applyLinearImpulse(getUserData().getLeftLinearImpulse(), body.getWorldCenter(), true);
+            }
         }
 
     }
 
     public void right()
     {
-        if(going==0)
+        if(!hit)
         {
-            going=2;
-            body.applyLinearImpulse(getUserData().getRightLinearImpulse(), body.getWorldCenter(), true);
+            if(going==0)
+            {
+                going=2;
+                body.applyLinearImpulse(getUserData().getRightLinearImpulse(), body.getWorldCenter(), true);
 
+            }
+            else if(going==1)
+            {
+                going=2;
+                body.applyLinearImpulse(getUserData().getRightLinearImpulse(), body.getWorldCenter(), true);
+                body.applyLinearImpulse(getUserData().getRightLinearImpulse(), body.getWorldCenter(), true);
+            }
         }
-        else if(going==1)
-        {
-            going=2;
-            body.applyLinearImpulse(getUserData().getRightLinearImpulse(), body.getWorldCenter(), true);
-            body.applyLinearImpulse(getUserData().getRightLinearImpulse(), body.getWorldCenter(), true);
-        }
+
     }
 
     public void hit() {
@@ -136,35 +143,44 @@ public class Player extends GameActor {
         batch.draw(textureRegion, screenRectangle.x, screenRectangle.y,screenRectangle.getWidth()/2f,screenRectangle.getHeight()/2f, screenRectangle.getWidth(),
                 screenRectangle.getHeight(),1,1, MathUtils.radiansToDegrees * body.getAngle());
 
-        if(!isHit())
+        if(!hit)
         {
-            if(coin) {
-                batch.draw(textureCoinOver, screenRectangle.x, screenRectangle.y + transformToScreenY(2.25f) + coinGone, transformToScreenX(1)/2, transformToScreenY(1)/2, transformToScreenX(1),
-                        transformToScreenY(1), 1, 1, 45);
+            if(coin)
+            {
+                batch.draw(textureCoinOver, screenRectangle.x, screenRectangle.y + transformToScreen(2.25f) + coinGone, transformToScreen(1)/2, transformToScreen(1)/2, transformToScreen(1),
+                        transformToScreen(1), 1, 1, 45);
 
-                batch.draw(textureCoinBack, screenRectangle.x, screenRectangle.y + transformToScreenY(2.25f) + coinGone, transformToScreenX(1)/2, transformToScreenY(1)/2, transformToScreenX(1),
-                        transformToScreenY(1), 1, 1, 45);
+                batch.draw(textureCoinBack, screenRectangle.x, screenRectangle.y + transformToScreen(2.25f) + coinGone, transformToScreen(1)/2, transformToScreen(1)/2, transformToScreen(1),
+                        transformToScreen(1), 1, 1, 45);
 
                 if(coinValue==1)
                 {
-                    font.draw(batch,""+coinValue,screenRectangle.x+transformToScreenX(0.35f),screenRectangle.y + transformToScreenY(3f) + coinGone);
+                    font.draw(batch,""+coinValue,screenRectangle.x+transformToScreen(0.35f),screenRectangle.y + transformToScreen(3f) + coinGone);
                 }
                 else
                 {
-                    font.draw(batch,""+coinValue,screenRectangle.x+transformToScreenX(0.25f),screenRectangle.y + transformToScreenY(3f) + coinGone);
+                    font.draw(batch,""+coinValue,screenRectangle.x+transformToScreen(0.25f),screenRectangle.y + transformToScreen(3f) + coinGone);
                 }
-                coinGone+=1f;
+                coinGone+=100f*Gdx.graphics.getDeltaTime();
             }
         }
 
-        batch.end();
-        effect.setPosition(screenRectangle.x+transformToScreenX(1)/3,screenRectangle.y+ transformToScreenY(1.95f));
-        batch.begin();
-        effect.draw(batch,Gdx.graphics.getDeltaTime());
-        batch.end();
-        batch.begin();
-        if (effect.isComplete() && !hit)
-            effect.reset();
+
+        if(screenRectangle.y >0 && !hit)
+        {
+            batch.end();
+            effect.setPosition(screenRectangle.x+transformToScreen(1)/3,screenRectangle.y+ transformToScreen(1.95f));
+            batch.begin();
+            effect.draw(batch,Gdx.graphics.getDeltaTime());
+            batch.end();
+            batch.begin();
+
+            if (effect.isComplete())
+            {
+                effect.reset();
+            }
+        }
+
 
     }
 

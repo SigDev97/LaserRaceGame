@@ -35,8 +35,8 @@ public class GroundLeft extends GameActor {
         textureRegion1 = new TextureRegion(new Texture(Gdx.files.internal(Constants.GROUND_BACK)));
         textureRegion2 = new TextureRegion(new Texture(Gdx.files.internal(Constants.GROUND_OVER)));
 
-        textureRegionBounds = new Rectangle(transformToScreenX(body.getPosition().x-0.5f), transformToScreenY(body.getPosition().y),
-                transformToScreenX(getUserData().getWidth()+0.5f), transformToScreenY(getUserData().getHeight()));
+        textureRegionBounds = new Rectangle(transformToScreen(body.getPosition().x-0.5f), transformToScreen(body.getPosition().y),
+                transformToScreen(getUserData().getWidth()+0.5f), transformToScreen(getUserData().getHeight()));
 
         back=new Sprite(textureRegion1);
         back.setBounds(textureRegionBounds.x, textureRegionBounds.y, textureRegionBounds.width, textureRegionBounds.height);

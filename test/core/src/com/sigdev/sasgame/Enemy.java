@@ -12,8 +12,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.sigdev.sasgame.utils.Constants;
 import com.sigdev.sasgame.utils.GameActor;
+
+import aurelienribon.bodyeditor.BodyEditorLoader;
 
 /**
  * Created by benedetto.sigillo on 19/04/2017.
@@ -50,7 +53,6 @@ public class Enemy extends GameActor {
         alpha=1;
         changeAlpha=0;
         /////////////////////////////////////////
-
 
         ///COINS////////////////////////////////
         this.player=player;
@@ -137,17 +139,17 @@ public class Enemy extends GameActor {
         Vector2 position1 = player.getBody().getPosition();
         Vector2 position2 = body.getPosition();
 
-        position1.x=transformToScreenX(position1.x);
+        position1.x=transformToScreen(position1.x);
         position1.x=position1.x-(player.getScreenRectangle().width/2);
 
-        position2.x=transformToScreenX(position2.x);
+        position2.x=transformToScreen(position2.x);
         position2.x=position2.x+(screenRectangle.width/2);
 
 
-        position1.y=transformToScreenY(position1.y);
+        position1.y=transformToScreen(position1.y);
         position1.y=position1.y-(player.getScreenRectangle().height/2);
 
-        position2.y=transformToScreenY(position2.y);
+        position2.y=transformToScreen(position2.y);
         position2.y=position2.y+(screenRectangle.height/2);
 
         float prov_distance = position1.dst(position2);
@@ -163,16 +165,16 @@ public class Enemy extends GameActor {
         Vector2 position1 = player.getBody().getPosition();
         Vector2 position2 = body.getPosition();
 
-        position1.x=transformToScreenX(position1.x);
+        position1.x=transformToScreen(position1.x);
         position1.x=position1.x+(player.getScreenRectangle().width/2);
 
-        position2.x=transformToScreenX(position2.x);
+        position2.x=transformToScreen(position2.x);
         position2.x=position2.x-(screenRectangle.width/2);
 
-        position1.y=transformToScreenY(position1.y);
+        position1.y=transformToScreen(position1.y);
         position1.y=position1.y-(player.getScreenRectangle().height/2);
 
-        position2.y=transformToScreenY(position2.y);
+        position2.y=transformToScreen(position2.y);
         position2.y=position2.y+(screenRectangle.height/2);
 
         float prov_distance = position1.dst(position2);

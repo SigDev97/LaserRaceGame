@@ -43,5 +43,4 @@ public class BodyUtils {
 
         return userData != null && userData.getUserDataType() == UserDataType.ENEMY;
     }
-
 }

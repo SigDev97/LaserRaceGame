@@ -3,6 +3,7 @@ package com.sigdev.sasgame;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,10 +12,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,76 +25,92 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.sigdev.sasgame.utils.BodyEditorLoader;
 import com.sigdev.sasgame.utils.BodyUtils;
 import com.sigdev.sasgame.utils.Constants;
 import com.sigdev.sasgame.utils.SmartFontGenerator;
 import com.sigdev.sasgame.utils.WorldUtils;
+
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 /**
  * Created by benedetto.sigillo on 13/04/2017.
  */
 
 public class GameStage extends Stage implements ContactListener{
-    private static final int VIEWPORT_WIDTH = 15;
-    private static final int VIEWPORT_HEIGHT = 25;
 
-    private World world;
-    private GroundLeft groundLeft;
-    private GroundRight groundRight;
-    private Player player;
+    private SasGame game;
 
-    private HudManager hudManager;
-
-    private final float TIME_STEP = 1 / 300f;
-    private float accumulator = 0f;
-
+    //SCREEN
+    private static final int VIEWPORT_WIDTH = Constants.APP_WIDTH;
+    private static final int VIEWPORT_HEIGHT = Constants.APP_HEIGHT;
     public OrthographicCamera camera;
     public Viewport viewport;
-    private Box2DDebugRenderer renderer;
 
     private Rectangle screenRightSide,screenLeftSide;
     private Vector3 touchPoint;
 
-    private FPSLogger fps;
+    private HudManager hudManager;
     private BitmapFont font;
+
+    private Box2DDebugRenderer renderer;
+
+
+    //OBJECTS
+    public World world;
+
+    private GroundLeft groundLeft;
+    private GroundRight groundRight;
+    private Player player;
+
+
+    //MOVIMENTO E VARIABILI
+    private final float TIME_STEP = 1 / 300f;
+    private float accumulator = 0f;
 
     private Background background;
     private Vector2 speed;
     private float space;
     private int s=0;
 
-    private SasGame game;
+    //ALTRO
+    private FPSLogger fps;
+
+
 
     public GameStage(SasGame game) {
 
+        super(new ScalingViewport(Scaling.stretch, VIEWPORT_WIDTH, VIEWPORT_HEIGHT,
+                new OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT)));
+
         this.game=game;
 
-        //INIZIALIZATION
+        //INIZIALIZATION WORLD
         world = WorldUtils.createWorld();
         world.setContactListener(this);
         renderer = new Box2DDebugRenderer();
 
-
-
-        speed=new Vector2(0f,10f);
+        //SCREEN
+        speed=new Vector2(0f,0f);
         space=0;
         initFont();
         hudManager = new HudManager(getBatch(),font);
-
         setupCamera();
         setUpBackground();
 
+        //OBJECTS
         setupGround();
         setupPlayer();
 
+        //CONTROLS
         createEnemy();
         setupTouchControlAreas();
 
-
-
         //TESTS
-        fps=new FPSLogger();//fps logger
+        fps=new FPSLogger();
 
+        ///PROVA IMPORTAZIONE MODELLO 2D
     }
 
     private void initFont()
@@ -99,17 +118,25 @@ public class GameStage extends Stage implements ContactListener{
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         SmartFontGenerator fontGen = new SmartFontGenerator();
         FileHandle exoFile = Gdx.files.internal(Constants.FONT);
-        font = fontGen.createFont(exoFile, "exo-small", 18);
-        font.getData().setScale((Gdx.graphics.getWidth()/100)*0.25f);
+        font = fontGen.createFont(exoFile, "exo-small", 22);
+        font.getData().setScale(1+(25/Gdx.graphics.getHeight()));
 
     }
 
     private void setupCamera() {
-        camera = new OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+        /*camera = new OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0f);
         viewport=new ScalingViewport(Scaling.stretch,VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+        camera.update();*/
+
+        camera = new OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0f);
         camera.update();
+
+
     }
+
+
 
     private void setupGround()
     {
@@ -149,16 +176,16 @@ public class GameStage extends Stage implements ContactListener{
     public void act(float delta) {
         super.act(delta);
 
+        //DELETE OLD BODYS
         Array<Body> bodies = new Array<Body>(world.getBodyCount());
         world.getBodies(bodies);
 
         for (Body body : bodies) {
-            update(body);
+            updateBody(body);
         }
 
         // Fixed timestep
         accumulator += delta;
-
         while (accumulator >= delta) {
             world.step(TIME_STEP, 6, 2);
             accumulator -= TIME_STEP;
@@ -166,20 +193,37 @@ public class GameStage extends Stage implements ContactListener{
 
         //TODO: Implement interpolation
 
-        speed.y=speed.y+0.0025f;//Temporany speed increase method
 
-        space+= (speed.y*(delta*10))/100;//Temporany space increase method
+        //SPEED & SPACE
+
+        if(speed.y<7.5)//START
+        {
+            speed.y=speed.y+0.0075f;//Temporany speed increase method
+            if(s>10)
+            {
+                background.setSpeed(background.getSpeed()+1);
+                s=0;
+            }
+            space+= (speed.y*(delta*7.5f))/100;
+        }
+        else
+        {
+            speed.y=speed.y+0.0020f;//Temporany speed increase method
+            if(s>30)
+            {
+                background.setSpeed(background.getSpeed()+1);
+                s=0;
+            }
+            space+= (speed.y*(delta*10f))/100;
+        }
+        //Temporany space increase method
 
         s++;
-        if(s>25)
-        {
-            background.setSpeed(background.getSpeed()+1);
-            s=0;
-        }
+
 
     }
 
-    private void update(Body body) {
+    private void updateBody(Body body) {
         if (!BodyUtils.bodyInBounds(body)) {
             if (BodyUtils.bodyIsEnemy(body) && !player.isHit()) {
                 createEnemy();
@@ -193,6 +237,9 @@ public class GameStage extends Stage implements ContactListener{
     public void draw() {
         super.draw();
         hudManager.draw(space, speed.y);
+        getCamera().combined.scale(getCamera().viewportWidth,getCamera().viewportHeight,0f);
+        renderer.render(world,getCamera().view);
+
     }
 
     @Override

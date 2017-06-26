@@ -37,10 +37,10 @@ public abstract class GameActor extends Actor {
     }
 
     private void updateRectangle() {
-        screenRectangle.x = transformToScreenX(body.getPosition().x - userData.getWidth() / 2);
-        screenRectangle.y = transformToScreenY(body.getPosition().y - userData.getHeight() / 2);
-        screenRectangle.width = transformToScreenX(userData.getWidth());
-        screenRectangle.height = transformToScreenY(userData.getHeight());
+        screenRectangle.x = transformToScreen(body.getPosition().x - userData.getWidth() / 2);
+        screenRectangle.y = transformToScreen(body.getPosition().y - userData.getHeight() / 2);
+        screenRectangle.width = transformToScreen(userData.getWidth());
+        screenRectangle.height = transformToScreen(userData.getHeight());
     }
 
     protected float transformToScreen(float n) {
@@ -48,7 +48,7 @@ public abstract class GameActor extends Actor {
         return Constants.WORLD_TO_SCREEN * n;
     }
 
-    protected float transformToScreenX(float n) {
+    /*protected float transformToScreenX(float n) {
 
         return (Gdx.graphics.getWidth()/15)*n;
     }
@@ -56,5 +56,5 @@ public abstract class GameActor extends Actor {
     protected float transformToScreenY(float n) {
 
         return (Gdx.graphics.getHeight()/25)*n;
-    }
+    }*/
 }
